@@ -1,0 +1,108 @@
+---
+title: "Suicide"
+author: "sm"
+date: '2021 10 15 '
+output: html_document
+---
+
+가설검정 하는 법만 예습하고 오기
+
+# 자살 방지를 위한 도움의 손길은 누구에게?
+
+```{r}
+library(dplyr)
+```
+
+### 1. 데이터 불러오기 
+
+```{r}
+data <- read.csv('../Data/2019_suicide.csv')
+data
+str(data)
+```
+
+### 2. 데이터 수집 
++ 남자데이터와 여자데이터로 구분 
+
+```{r}
+man <- data[22:40, c(3,4,5)] # 데이터 가져올 행의 인덱스, 칼럼 인덱스)
+man
+
+woman <- data[41:59,c(4,5)] # 둘이 합칠 것이기에 3열은 뺌
+woman
+
+total <- cbind(man,woman) # 열로 기준으로 합치기
+total
+```
+
+### 3. 전처리 
+
++ 컬럼명 변경 
+```{r}
+names(total) <- c('연령','남자사망자수','남자사망비율','여자사망자수','여자사망비율')
+total
+```
+
++ 연령을 5살 텀으로 변경(Binning을 위한, 카테고리 변경 용이)
+```{r}
+total$age <-0
+step <-5
+for(i in 1:19){
+  total[i,'age']<-step
+  step <- step +5
+}
+total
+```
+
++ Binning(10대, 20대, 30대...)
+```{r}
+total$age2[total$age<20] <-10
+total$age2[total$age>20 & total$age<=30]<-20
+total$age2[total$age>30 & total$age<=40]<-30
+total$age2[total$age>40 & total$age<=50]<-40
+total$age2[total$age>50 & total$age<=60]<-50
+total$age2[total$age>60 & total$age<=70]<-60
+total$age2[total$age>70 & total$age<=80]<-70
+total$age2[total$age>80 & total$age<=90]<-80
+total$age2[total$age>90] <-90
+total # 전에 5살 텀으로 했기 때문에 30살이면 20대, 35살이면 30대로 
+#여러가지 데이터 다듬어 봐야함, 결측치라든지
+```
+
+결측치 확인 
+```{r}
+str(total)
+head(total)
+total$'여자사망자수'<-ifelse(is.na(total$'여자사망자수'),0,total$'여자사망자수')
+total$'여자사망비율'<-ifelse(total$'여자사망비율'=="-",0,total$'여자사망비율')
+total$'남자사망비율'<-ifelse(total$'남자사망비율'=="-",0,total$'남자사망비율')
+total
+```
+
+이상치 확인 
+```{r}
+library(ggplot2)
+ggplot(data=total,aes(age2,남자사망자수))+geom_point()
+ggplot(data=total,aes(age2,남자사망비율))+geom_point()
+ggplot(data=total,aes(age2,여자사망비율))+geom_point()
+ggplot(data=total,aes(age2,여자사망자수))+geom_point()
+```
+
+
+### 4. 데이터 분석 
+
++ 표준 편차 
+```{r}
+total %>% group_by(age2) %>% summarise(sd_man=sd(남자사망비율),sd_woman=sd(여자사망비율))
+``` 
+70대 표준편차가 너무 큼 뭔일이 있을까?
+```{r}
+library(ggplot2)
+ggplot(data=total,aes(x=age2, y=남자사망비율)) +geom_point()
+cor_total<-cor(total)
+```
+
+
+
+
+

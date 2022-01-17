@@ -1,0 +1,47 @@
+---
+title: "test"
+author: "sm"
+date: '2021 10 15 '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+ #code chenk
+```{r cars}    
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}     
+plot(pressure)
+```
+
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+
+## 테스트용 문서 
++ 항목1 
++ 항목2 
++ 코드 작성시 ctrl + alt + i
+```{r}
+library(ggplot2)
+qplot(data=mpg,x=drv,fill=drv)
+```
+
+p. 책 308
+
+r스튜디오 맨 위에 Knit를 누르면 보고서를 저장할 수 있음 html형식 과 Rmd 형식 두개로 저장됨 
+왜 두개가 저장이 되냐? html은 수정을 할 수 없음, 원본은 Rmd --> 원본 소스(수정가능, 수정해서 다시 저장할 수 있음, 수정됬을 시 계속 Knit 눌러 주면 됨.)
